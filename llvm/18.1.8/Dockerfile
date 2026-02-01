@@ -9,10 +9,12 @@ RUN apt-get update -y && \
         gcc \
         g++ \
         cmake \
-        ninja-build && \
-    wget https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-18.1.8.tar.gz && \
-    tar xvf llvmorg-18.1.8.tar.gz && \
-    cd llvmorg-18.1.8 && \
+        ninja-build \
+        python3 && \
+    cd /tmp && \
+    wget --no-check-certificate -q https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-18.1.8.tar.gz && \
+    tar xf /tmp/llvmorg-18.1.8.tar.gz && \
+    cd /tmp/llvm-project-llvmorg-18.1.8 && \
     cmake -S llvm -B build \
         -GNinja \
         -DCMAKE_INSTALL_PREFIX=/opt/llvm-18-d \
@@ -27,4 +29,5 @@ RUN apt-get update -y && \
         -DLLVM_OPTIMIZED_TABLEGEN=ON \
         -DLLVM_USE_LINKER=gold \
         -DLLVM_PARALLEL_LINK_JOBS=1 && \
-    cmake --build build -j $(nproc) -- install
+    cmake --build build -j $(nproc) -- install && \
+    rm -rf /tmp/*
