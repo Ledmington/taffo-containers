@@ -1,0 +1,66 @@
+name: Build and push Docker images
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
+    strategy:
+      matrix:
+        include:
+          - toolchain: llvm
+            version: 18.1.8
+
+    env:
+      REGISTRY: docker.io
+      IMAGE_NAME: taffo/taffo-deps:${{ matrix.toolchain }}${{ matrix.version }}
+      IMAGE_ROOT: ${{ github.workspace }}/${{ matrix.toolchain }}/${{ matrix.version }}
+
+    steps:
+      # Check this page if the space freed is not enough
+      # https://github.com/easimon/maximize-build-space/blob/test-report/README.md
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 35000
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-docker-images: 'true'
+
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Build Docker image
+        run: |
+          cd ${GITHUB_WORKSPACE}/${{ matrix.toolchain }}/${{ matrix.version }}
+          docker build -t ${REGISTRY}/${IMAGE_NAME} -f Dockerfile .
+      
+      - name: Log in to the Container registry
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: Ledmington
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Docker image
+        if: ${{ github.ref == 'refs/heads/master' }}
+        id: push
+        run: |
+          docker push ${REGISTRY}/${IMAGE_NAME}
