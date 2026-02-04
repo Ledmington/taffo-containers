@@ -37,8 +37,8 @@ RUN cd /tmp/llvm-project-llvmorg-18.1.8 && \
         -DCMAKE_CXX_FLAGS="-include cstdint -U_GLIBCXX_ASSERTIONS" \
         -DCMAKE_EXE_LINKER_FLAGS="-lstdc++" \
         -DLIBOMP_USE_STDCPPLIB=ON
-RUN cmake --build build -j $(nproc) -- all
-RUN cmake --build build -- install
+RUN cd /tmp/llvm-project-llvmorg-18.1.8 && cmake --build build -j $(nproc) -- all
+RUN cd /tmp/llvm-project-llvmorg-18.1.8 && cmake --build build -- install
 RUN cd ${HOME} && \
     rm -rf /tmp/* && \
     apt-get remove -y wget && \
