@@ -2,9 +2,9 @@ FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update -y
-RUN apt-get upgrade -y
-RUN apt-get install -y --no-install-recommends \
+RUN apt-get update -y && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
         wget \
         git \
         gcc \
@@ -12,13 +12,13 @@ RUN apt-get install -y --no-install-recommends \
         cmake \
         ninja-build \
         python3 \
-        ca-certificates
-RUN cd /tmp && \
-    wget -q https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-18.1.8.tar.gz
-RUN echo "09c08693a9afd6236f27a2ebae62cda656eba19021ef3f94d59e931d662d4856 /tmp/llvmorg-18.1.8.tar.gz" >> /tmp/llvm_hash.txt
-RUN sha256sum --check /tmp/llvm_hash.txt
-RUN cd /tmp && tar xzf /tmp/llvmorg-18.1.8.tar.gz
-RUN cd /tmp/llvm-project-llvmorg-18.1.8 && \
+        ca-certificates && \
+    cd /tmp && \
+    wget -q https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-18.1.8.tar.gz && \
+    echo "09c08693a9afd6236f27a2ebae62cda656eba19021ef3f94d59e931d662d4856 /tmp/llvmorg-18.1.8.tar.gz" >> /tmp/llvm_hash.txt && \
+    sha256sum --check /tmp/llvm_hash.txt && \
+    tar xzf /tmp/llvmorg-18.1.8.tar.gz && \
+    cd /tmp/llvm-project-llvmorg-18.1.8 && \
     cmake -S llvm -B build \
         -G Ninja \
         -DCMAKE_BUILD_TYPE=Debug \
@@ -36,10 +36,10 @@ RUN cd /tmp/llvm-project-llvmorg-18.1.8 && \
         -DLLVM_PARALLEL_LINK_JOBS=1 \
         -DCMAKE_CXX_FLAGS="-include cstdint -U_GLIBCXX_ASSERTIONS" \
         -DCMAKE_EXE_LINKER_FLAGS="-lstdc++" \
-        -DLIBOMP_USE_STDCPPLIB=ON
-RUN cd /tmp/llvm-project-llvmorg-18.1.8 && cmake --build build -j $(nproc) -- all
-RUN cd /tmp/llvm-project-llvmorg-18.1.8 && cmake --build build -- install
-RUN cd ${HOME} && \
+        -DLIBOMP_USE_STDCPPLIB=ON && \
+    cmake --build build -j $(nproc) -- all && \
+    cmake --build build -- install && \
+    cd ${HOME} && \
     rm -rf /tmp/* && \
     apt-get remove -y wget && \
     apt-get autoremove -y && \
