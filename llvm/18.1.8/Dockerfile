@@ -17,7 +17,7 @@ RUN apt-get update -y && \
     wget -q https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-18.1.8.tar.gz && \
     echo "09c08693a9afd6236f27a2ebae62cda656eba19021ef3f94d59e931d662d4856 /tmp/llvmorg-18.1.8.tar.gz" >> /tmp/llvm_hash.txt && \
     sha256sum --check /tmp/llvm_hash.txt && \
-    tar xf /tmp/llvmorg-18.1.8.tar.gz && \
+    tar xzf /tmp/llvmorg-18.1.8.tar.gz && \
     cd /tmp/llvm-project-llvmorg-18.1.8 && \
     cmake -S llvm -B build \
         -G Ninja \
@@ -39,7 +39,7 @@ RUN apt-get update -y && \
         -DLIBOMP_USE_STDCPPLIB=ON && \
     cmake --build build -j $(nproc) -- all && \
     cmake --build build -- install && \
-    cd && \
+    cd ${HOME} && \
     rm -rf /tmp/* && \
     apt-get remove -y wget && \
     apt-get autoremove -y && \
