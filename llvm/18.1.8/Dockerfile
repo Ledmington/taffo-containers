@@ -13,6 +13,14 @@ RUN apt-get update -y && \
         ninja-build \
         python3 \
         ca-certificates && \
+    # Setup OR-Tools
+    cd /tmp && \
+    git clone https://github.com/google/or-tools.git -b main --depth 1 && \
+    cd /tmp/or-tools && \
+    cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_DEPS=ON -DCMAKE_INSTALL_PREFIX=/opt/or-tools && \
+    cmake --build build -j $(nproc) -- all && \
+    cmake --build build -- install && \
+    # Setup LLVM
     cd /tmp && \
     wget -q https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-18.1.8.tar.gz && \
     echo "09c08693a9afd6236f27a2ebae62cda656eba19021ef3f94d59e931d662d4856 /tmp/llvmorg-18.1.8.tar.gz" >> /tmp/llvm_hash.txt && \
@@ -39,6 +47,7 @@ RUN apt-get update -y && \
         -DLIBOMP_USE_STDCPPLIB=ON && \
     cmake --build build -j $(nproc) -- all && \
     cmake --build build -- install && \
+    # Cleanup
     cd ${HOME} && \
     rm -rf /tmp/* && \
     apt-get remove -y wget && \
