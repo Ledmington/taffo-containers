@@ -1,17 +1,17 @@
 name: Build and push Docker images
 
-# No automatic workflows
-# on:
-#   push:
-#     branches:
-#       - master
-#   pull_request:
-#     branches:
-#       - master
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    timeout-minutes: 1440  # 24 hours
 
     permissions:
       contents: read
@@ -27,8 +27,7 @@ jobs:
 
     env:
       REGISTRY: docker.io
-      IMAGE_NAME: taffo/taffo-deps:${{ matrix.toolchain }}${{ matrix.version }}
-      IMAGE_ROOT: ${{ github.workspace }}/${{ matrix.toolchain }}/${{ matrix.version }}
+      IMAGE_NAME: ledmington/taffo-deps:${{ matrix.toolchain }}${{ matrix.version }}
 
     steps:
       - name: Checkout repository
@@ -44,7 +43,7 @@ jobs:
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567
         with:
           registry: ${{ env.REGISTRY }}
-          username: Ledmington
+          username: ledmington
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Push Docker image
