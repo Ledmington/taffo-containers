@@ -20,6 +20,9 @@ RUN apt-get update -y && \
     cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_DEPS=ON -DCMAKE_INSTALL_PREFIX=/opt/or-tools && \
     cmake --build build -j $(nproc) -- all && \
     cmake --build build -- install && \
+    # Temporary cleanup
+    cd ${HOME} && \
+    rm -rf /tmp/* && \
     # Setup LLVM
     cd /tmp && \
     wget -q https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-18.1.8.tar.gz && \
