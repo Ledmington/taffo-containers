@@ -39,6 +39,7 @@ jobs:
           sudo rm -rf /opt/ghc || true
           sudo rm -rf /usr/local/.ghcup || true
           sudo rm -rf /opt/hostedtoolcache/CodeQL || true
+          sudo docker system prune --all --volumes --force
           sudo apt-get clean
           sudo rm -rf /var/lib/apt/lists/*
           df -h
