@@ -15,11 +15,9 @@ RUN apt-get update -y && \
         ca-certificates && \
     # Setup OR-Tools
     cd /tmp && \
-    git clone https://github.com/google/or-tools.git -b main --depth 1 && \
-    cd /tmp/or-tools && \
-    cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_DEPS=ON -DCMAKE_INSTALL_PREFIX=/opt/or-tools && \
-    cmake --build build -j $(nproc) -- all && \
-    cmake --build build -- install && \
+    wget -q https://github.com/google/or-tools/releases/download/v9.15/or-tools_amd64_ubuntu-24.04_cpp_v9.15.6755.tar.gz && \
+    mkdir -p /opt/or-tools && \
+    tar -xzf or-tools_amd64_ubuntu-24.04_cpp_v9.15.6755.tar.gz -C /opt/or-tools --strip-components=1 && \
     # Setup LLVM
     cd /tmp && \
     wget -q https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-18.1.8.tar.gz && \
