@@ -1,8 +1,8 @@
-FROM ubuntu:24.04
+FROM ubuntu:24.04 AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update -y && \
+RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
         wget \
@@ -27,7 +27,7 @@ RUN apt-get update -y && \
     cd /tmp/llvm-project-llvmorg-18.1.8 && \
     cmake -S llvm -B build \
         -G Ninja \
-        -DCMAKE_BUILD_TYPE=Debug \
+        -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX=/opt/llvm-18-d \
         -DLLVM_ENABLE_PROJECTS='clang;openmp' \
         -DLLVM_ENABLE_RUNTIMES='libcxx;libcxxabi;libunwind' \
@@ -51,3 +51,21 @@ RUN apt-get update -y && \
     apt-get remove -y wget && \
     apt-get autoremove -y && \
     apt-get clean -y
+
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        python3 \
+        cmake \
+        ninja-build && \
+    apt-get autoremove -y && \
+    apt-get clean -y && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /opt/or-tools /opt/or-tools
+COPY --from=builder /opt/llvm-18 /opt/llvm-18
