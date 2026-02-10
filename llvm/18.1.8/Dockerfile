@@ -28,7 +28,7 @@ RUN apt-get update && \
     cmake -S llvm -B build \
         -G Ninja \
         -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_INSTALL_PREFIX=/opt/llvm-18-d \
+        -DCMAKE_INSTALL_PREFIX=/opt/llvm-18 \
         -DLLVM_ENABLE_PROJECTS='clang;openmp' \
         -DLLVM_ENABLE_RUNTIMES='libcxx;libcxxabi;libunwind' \
         -DLLVM_TARGETS_TO_BUILD='X86' \
