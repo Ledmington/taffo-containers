@@ -23,7 +23,9 @@ jobs:
       matrix:
         include:
           - toolchain: llvm
-            version: 18.1.8
+            version: 18
+          - toolchain: llvm
+            version: 19
 
     env:
       REGISTRY: docker.io
