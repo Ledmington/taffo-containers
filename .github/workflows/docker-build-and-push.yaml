@@ -26,6 +26,8 @@ jobs:
             version: 18
           - toolchain: llvm
             version: 19
+          - toolchain: llvm
+            version: 20
 
     env:
       REGISTRY: docker.io
