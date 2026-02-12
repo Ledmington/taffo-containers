@@ -21,7 +21,7 @@ RUN apt-get update && \
     # Setup LLVM
     cd /tmp && \
     wget -q https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-17.0.6.tar.gz && \
-    echo "6bcc6f7cc502e0bac7c7d8dd799c2b3497c19358197eddb68c0573e3944f5d5c /tmp/llvmorg-17.0.6.tar.gz" >> /tmp/llvm_hash.txt && \
+    echo "81494d32e6f12ea6f73d6d25424dbd2364646011bb8f7e345ca870750aa27de1 /tmp/llvmorg-17.0.6.tar.gz" >> /tmp/llvm_hash.txt && \
     sha256sum --check /tmp/llvm_hash.txt && \
     tar xzf /tmp/llvmorg-17.0.6.tar.gz && \
     cd /tmp/llvm-project-llvmorg-17.0.6 && \
