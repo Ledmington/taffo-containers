@@ -23,6 +23,8 @@ jobs:
       matrix:
         include:
           - toolchain: llvm
+            version: 17
+          - toolchain: llvm
             version: 18
           - toolchain: llvm
             version: 19
